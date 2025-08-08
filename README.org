@@ -1,6 +1,6 @@
 * Tagger-Emacs-Wrapper
 
-This is a wrapper that offers allows to call some functions from the [[https://github.com/L-Colombo/tagger][Tagger]] utility from the comfort of Emacs.
+This is a wrapper that allows to call some functions from the [[https://github.com/L-Colombo/tagger][tagger]] utility from the comfort of Emacs.
 
 ** Installation and setup
 
