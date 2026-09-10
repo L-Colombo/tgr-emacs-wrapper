@@ -1,11 +1,11 @@
-;;; tagger.el --- Interact with tags in your org files -*- lexical-binding:t -*-
+;;; tgr.el --- Interact with tags in your org files -*- lexical-binding:t -*-
 
 ;; Copyright (C) 2025 Lorenzo Colombo
 
 ;; Author: Lorenzo Colomvo
 ;; Version: 0.1.2
-;; Keywords: Org-Mode, Tagger
-;; URL: https://github.com/L-Colombo/tagger-emacs-wrapper
+;; Keywords: Org-Mode, tgr
+;; URL: https://github.com/L-Colombo/tgr-emacs-wrapper
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -27,21 +27,21 @@
 
 ;;; Commentary:
 
-;; This packages provides wrappers around the "tagger" command line tool
-;; (https://github.com/L-Colombo/tagger) The aim of "tagger" is to provide
+;; This packages provides wrappers around the "tgr" command line tool
+;; (https://github.com/L-Colombo/tgr) The aim of "tgr" is to provide
 ;; an easy and faster way to interact (list, search and refile) with tags in your .org files.
 
 ;;; Code:
 
-(defvar tagger/tagger-directory
+(defvar tgr/tgr-directory
   nil
   "The directory where your Org files to be searched reside")
 
 ;;;###autoload
-(defun tagger/locate ()
+(defun tgr/locate ()
   "Show files that contain tags matching a given pattern"
   (interactive)
-  (let* ((pattern (read-from-minibuffer "[tagger/locate] Query pattern: "))
+  (let* ((pattern (read-from-minibuffer "[tgr/locate] Query pattern: "))
          (file-list (string-split (shell-command-to-string
                                    (format "tgr locate %s" pattern))))
          (link-buf-name (format "%s.org" pattern))
@@ -52,17 +52,17 @@
         (insert header)
         (dolist (file file-list)
           (insert (format "[[%s][%s]]\n"
-                          (format "%s/%s" tagger/tagger-directory file) file)))
+                          (format "%s/%s" tgr/tgr-directory file) file)))
         (beginning-of-buffer)
         (org-mode)
         (org-fold-show-all)
         (switch-to-buffer-other-window link-buf-name))))
 
 ;;;###autoload
-(defun tagger/refile ()
+(defun tgr/refile ()
   "Refile all subtrees that match a given pattern"
   (interactive)
-  (let* ((pattern (read-from-minibuffer "[tagger/refile] Query pattern: "))
+  (let* ((pattern (read-from-minibuffer "[tgr/refile] Query pattern: "))
          (refiled-file-contents (shell-command-to-string
                                  (format "tgr refile %s --no-pager" pattern)))
          (refiled-bufname (format "tgr_refiled_%s.org" pattern)))
@@ -74,10 +74,10 @@
       (switch-to-buffer-other-window refiled-bufname))))
 
 ;;;###autoload
-(defun tagger/search ()
-  "Search for tags in your tagger directory"
+(defun tgr/search ()
+  "Search for tags in your tgr directory"
   (interactive)
-  (let* ((pattern (read-from-minibuffer "[tagger/search] Query pattern: "))
+  (let* ((pattern (read-from-minibuffer "[tgr/search] Query pattern: "))
          (search-output (shell-command-to-string
                          (concat "tgr search " pattern))))
     (if (= 1 (length search-output))
@@ -89,8 +89,8 @@
         (switch-to-buffer-other-window (format "*tgr search: %s*" pattern))))))
 
 ;;;###autoload
-(defun tagger/tags-all ()
-  "Get a quick view of all the tags in your tagger directory"
+(defun tgr/tags-all ()
+  "Get a quick view of all the tags in your tgr directory"
   (interactive)
   (let ((tags (shell-command-to-string "tgr tags")))
     (with-current-buffer-window
@@ -100,19 +100,19 @@
       (switch-to-buffer-other-window "*All tags*"))))
 
 ;;;###autoload
-(defun tagger/tags-file ()
-  "Get all your tags in a specific file withing your tagger directory"
+(defun tgr/tags-file ()
+  "Get all your tags in a specific file withing your tgr directory"
   (interactive)
   (let ((file (completing-read
-               "[tagger/tags-file] Where? "
+               "[tgr/tags-file] Where? "
                (directory-files
-                tagger/tagger-directory))))
+                tgr/tgr-directory))))
     (with-current-buffer-window
         (get-buffer-create (format "*Tags in %s*" file))
         nil nil
       (insert (shell-command-to-string (format "tgr tags --file=%s" file)))
       (switch-to-buffer-other-window (format "*Tags in %s*" file)))))
 
-(provide 'tagger)
+(provide 'tgr)
 
-;;; tagger.el ends here
+;;; tgr.el ends here
