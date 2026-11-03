@@ -33,6 +33,8 @@
 
 ;;; Code:
 
+(require 'org)
+
 (defvar tgr/tgr-directory
   nil
   "The directory where your Org files to be searched reside")
@@ -53,7 +55,7 @@
         (dolist (file file-list)
           (insert (format "[[%s][%s]]\n"
                           (format "%s/%s" tgr/tgr-directory file) file)))
-        (beginning-of-buffer)
+        (goto-char (point-min))
         (org-mode)
         (org-fold-show-all)
         (switch-to-buffer-other-window link-buf-name))))
@@ -69,7 +71,7 @@
     (with-current-buffer
         (get-buffer-create refiled-bufname)
       (insert refiled-file-contents)
-      (beginning-of-buffer)
+      (goto-char (point-min))
       (org-mode)
       (switch-to-buffer-other-window refiled-bufname))))
 
