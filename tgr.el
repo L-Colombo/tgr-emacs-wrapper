@@ -34,6 +34,7 @@
 ;;; Code:
 
 (require 'org)
+(require 's)
 
 (defvar tgr/tgr-directory
   nil
