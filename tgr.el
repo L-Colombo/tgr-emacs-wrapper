@@ -44,8 +44,8 @@
   "Show files that contain tags matching a given pattern"
   (interactive)
   (let* ((pattern (read-from-minibuffer "[tgr/locate] Query pattern: "))
-         (file-list (string-split (shell-command-to-string
-                                   (format "tgr locate %s" pattern))))
+         (file-list (string-split (s-trim (shell-command-to-string
+                                           (format "tgr locate %s" pattern)))))
          (link-buf-name (format "%s.org" pattern))
          (header
           (format "* Files containing tags that match the pattern \"%s\"\n" pattern)))
@@ -65,8 +65,8 @@
   "Refile all subtrees that match a given pattern"
   (interactive)
   (let* ((pattern (read-from-minibuffer "[tgr/refile] Query pattern: "))
-         (refiled-file-contents (shell-command-to-string
-                                 (format "tgr refile %s --no-pager" pattern)))
+         (refiled-file-contents (s-trim (shell-command-to-string
+                                         (format "tgr refile %s --no-pager" pattern))))
          (refiled-bufname (format "tgr_refiled_%s.org" pattern)))
     (with-current-buffer
         (get-buffer-create refiled-bufname)
@@ -80,8 +80,8 @@
   "Search for tags in your tgr directory"
   (interactive)
   (let* ((pattern (read-from-minibuffer "[tgr/search] Query pattern: "))
-         (search-output (shell-command-to-string
-                         (concat "tgr search " pattern))))
+         (search-output (s-trim (shell-command-to-string
+                                 (concat "tgr search " pattern)))))
     (if (= 1 (length search-output))
         (message (format "No result for query \"%s\"" pattern))
       (with-current-buffer-window
@@ -112,7 +112,7 @@
     (with-current-buffer-window
         (get-buffer-create (format "*Tags in %s*" file))
         nil nil
-      (insert (shell-command-to-string (format "tgr tags --file=%s" file)))
+      (insert (s-trim (shell-command-to-string (format "tgr tags --file=%s" file))))
       (switch-to-buffer-other-window (format "*Tags in %s*" file)))))
 
 (provide 'tgr)
